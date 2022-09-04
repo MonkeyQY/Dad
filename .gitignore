@@ -1,0 +1,6 @@
+__pycache__
+/venv
+/.idea
+/.app.config.py
+**/.env
+**/.DS_Store
