@@ -3,10 +3,10 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.types import Message, CallbackQuery
 
-from bot_init import bot
-from keyboard_for_bot import keyboard_menu
-from methods_change_file import get_file
-from send_file_on_mail import send_email
+from app.bot_init import bot
+from app.keyboard_for_bot import keyboard_menu
+from app.methods_change_file import get_file
+from app.send_file_on_mail import send_email
 
 
 class FSMChange(StatesGroup):

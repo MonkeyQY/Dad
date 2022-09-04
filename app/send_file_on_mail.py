@@ -1,11 +1,10 @@
 import logging
-import mimetypes
 import smtplib
 from email import encoders
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 
-from bot_init import password
+from app.bot_init import password
 
 
 def send_email(file, mail: str):

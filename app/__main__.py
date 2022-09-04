@@ -1,7 +1,7 @@
 from aiogram.utils import executor
 
-from bot_init import dp
-from handlers import register_handlers
+from app.bot_init import dp
+from app.handlers import register_handlers
 
 
 register_handlers(dp)
