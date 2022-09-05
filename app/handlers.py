@@ -8,6 +8,8 @@ from app.keyboard_for_bot import keyboard_menu
 from app.methods_change_file import get_file
 from app.send_file_on_mail import send_email
 
+telegram_id = [1188662112, 5389659319]
+
 
 class FSMChange(StatesGroup):
     home_menu = State()
@@ -18,8 +20,9 @@ class FSMChange(StatesGroup):
 
 
 async def start(message: Message):
-    await message.answer('Измени файл и впиши почту  и нажми отправить\n', reply_markup=keyboard_menu())
-    await FSMChange.home_menu.set()
+    if message.chat.id in telegram_id:
+        await message.answer('Измени файл, впиши почту  и нажми отправить\n', reply_markup=keyboard_menu())
+        await FSMChange.home_menu.set()
 
 
 async def start_change_file(call: CallbackQuery):
