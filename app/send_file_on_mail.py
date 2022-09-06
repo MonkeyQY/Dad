@@ -21,12 +21,12 @@ def send_email(file, mail: str):
         file_path.add_header('Content-Disposition', 'attachment', filename='ИП Василевский.docx')
         encoders.encode_base64(file_path)
         msg.attach(file_path)
-        server = smtplib.SMTP_SSL('smtp.mail.ru', 465)
-        server.login(sender, passw)
-        server.sendmail(sender, mail, msg.as_string())
-        server.quit()
-        logging.info('Успешно отправил на почту')
-        return True
+        with smtplib.SMTP_SSL('smtp.mail.ru', 465) as server:
+            server.login(sender, passw)
+            server.sendmail(sender, mail, msg.as_string())
+            server.quit()
+            logging.info('Успешно отправил на почту')
+            return True
     except:
         logging.exception('ошибка отправки на почту')
         return False
