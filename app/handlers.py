@@ -56,7 +56,7 @@ async def get_date(message: Message, state: FSMContext):
     await start(message)
 
 
-async def select_mail(call: CallbackQuery):
+async def select_mail(call: CallbackQuery, state: FSMContext):
     await bot.send_message(call.message.chat.id, 'Введи почту  или скопируй')
     await FSMChange.get_mail.set()
 
@@ -76,7 +76,7 @@ async def send_file(call: CallbackQuery, state: FSMContext):
         file = data.get('file')
         mail = data.get('mail')
     list_test = [file, mail]
-    successes_send = 'Успешно отправил'
+    successes_send = f'Успешно отправил на почту {mail}'
     error_send = 'Произошла ошибка отправки'
     match list_test:
         case list_test if None in list_test:
