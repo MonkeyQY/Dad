@@ -11,6 +11,8 @@ load_dotenv()
 
 api_token = os.getenv('token')
 password = os.getenv('password')
+telegram_dad = os.getenv('telegram_dad')
+telegram_me = os.getenv('telegram_me')
 
 storage = MemoryStorage()
 

@@ -3,12 +3,12 @@ from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.types import Message, CallbackQuery
 
-from app.bot_init import bot
+from app.bot_init import bot, telegram_dad, telegram_me
 from app.keyboard_for_bot import keyboard_menu
 from app.methods_change_file import get_file
 from app.send_file_on_mail import send_email
 
-telegram_id = [1188662112, 5389659319]
+telegram_id = [int(telegram_me), int(telegram_dad)]
 
 
 class FSMChange(StatesGroup):
