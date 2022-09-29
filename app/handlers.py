@@ -4,7 +4,9 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 from aiogram.types import Message, CallbackQuery
 
 from app.bot_init import bot, telegram_dad, telegram_me
+from app.get_file_and_mail import get_file_and_mail
 from app.keyboard_for_bot import keyboard_menu
+from app.messages import successes_send, error_send
 from app.methods_change_file import get_file
 from app.send_file_on_mail import send_email
 
@@ -40,8 +42,9 @@ async def get_start_point(message: Message, state: FSMContext):
 async def get_end_point(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data['end_point'] = message.text.strip()
-    await bot.send_message(message.chat.id, 'Введи дату когда едешь - формата день.месяц.год\n'
-                                            '26.08.2022')
+    await bot.send_message(message.chat.id,
+                           'Введи дату открытия путевого листа - формата день.месяц.год\n'
+                           '26.08.2022')
     await FSMChange.get_date.set()
 
 
@@ -64,7 +67,7 @@ async def select_mail(call: CallbackQuery, state: FSMContext):
 async def get_mail(message: Message, state: FSMContext):
     async with state.proxy() as data:
         data['mail'] = message.text.strip()
-    await bot.send_message(message.chat.id, 'Получил емейл, можешь отправлять файл заказчику')
+    await bot.send_message(message.chat.id, 'Получил email, можешь отправлять файл заказчику')
     await start(message)
     await FSMChange.home_menu.set()
 
@@ -72,22 +75,27 @@ async def get_mail(message: Message, state: FSMContext):
 async def send_file(call: CallbackQuery, state: FSMContext):
     msg = await call.message.edit_text('Подожди, отправляю письмо')
     chat_id = call.message.chat.id
-    async with state.proxy() as data:
-        file = data.get('file')
-        mail = data.get('mail')
+    file, mail = await get_file_and_mail()
     list_test = [file, mail]
-    successes_send = f'Успешно отправил на почту {mail}'
-    error_send = 'Произошла ошибка отправки'
     match list_test:
         case list_test if None in list_test:
-            await bot.delete_message(chat_id, message_id=msg.message_id)
-            await bot.send_message(call.message.chat.id, 'Не все данные были введены')
+            await not_all_data_has_been_entered(chat_id, msg, call)
         case _:
-            await bot.send_message(chat_id, successes_send) if send_email(file, mail) else await bot.send_message(
-                chat_id, error_send)
-            await bot.delete_message(chat_id, message_id=msg.message_id)
-            await state.finish()
-            await start(message=call.message)
+            await successes_job(chat_id, mail, file, call, msg, state)
+
+
+async def not_all_data_has_been_entered(chat_id, msg, call):
+    await bot.delete_message(chat_id, message_id=msg.message_id)
+    await bot.send_message(call.message.chat.id, 'Не все данные были введены')
+
+
+async def successes_job(chat_id, mail, file, call, msg, state):
+    await bot.send_message(chat_id, successes_send.format(mail=mail)) \
+        if send_email(file, mail) else await bot.send_message(
+        chat_id, error_send)
+    await bot.delete_message(chat_id, message_id=msg.message_id)
+    await state.finish()
+    await start(message=call.message)
 
 
 def register_handlers(dp: Dispatcher):
